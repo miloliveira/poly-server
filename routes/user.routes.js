@@ -49,7 +49,7 @@ router.get("/in/:userId/follow", isAuthenticated, async (req, res, next) => {
     const currentUser = req.payload._id;
     const { followUserId } = req.body;
     if (currentUser != userId) {
-      return await res.status(401).json({
+      return res.status(401).json({
         errorMessage: "This user does not have permition to perform this task",
       });
     }
