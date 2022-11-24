@@ -52,6 +52,36 @@ router.post(
   }
 );
 
+router.put(
+  "/comment-update/:commentId",
+  isAuthenticated,
+  async (req, res, next) => {
+    try {
+      const { commentId } = req.params;
+      const currentUser = req.payload._id;
+      const { content } = req.body;
+      let updatedComment;
+      const thisComment = await Comment.findById(commentId);
+
+      if (currentUser != thisComment.user) {
+        return res.status(400).json({
+          errorMessage:
+            "This user does not have permition to perform this task",
+        });
+      } else {
+        updatedComment = await Comment.findByIdAndUpdate(
+          commentId,
+          { content },
+          { new: true }
+        );
+        res.status(200).json(updatedComment);
+      }
+    } catch (error) {
+      res.status(400).json(error);
+    }
+  }
+);
+
 router.delete(
   "/comment/:commentId",
   isAuthenticated,
@@ -63,12 +93,10 @@ router.delete(
       const comment = await Comment.findById(commentId);
 
       if (currentUser != comment.user) {
-        return res
-          .status(400)
-          .json({
-            errorMessage:
-              "This user does not have permition to perform this task",
-          });
+        return res.status(400).json({
+          errorMessage:
+            "This user does not have permition to perform this task",
+        });
       }
 
       const postId = await comment.post;
