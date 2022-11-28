@@ -69,6 +69,12 @@ router.put(
             "This user does not have permition to perform this task",
         });
       } else {
+        if (!content) {
+          return res
+            .status(400)
+            .json({ errorMessage: "Please provide the comment content" });
+        }
+
         updatedComment = await Comment.findByIdAndUpdate(
           commentId,
           { content },

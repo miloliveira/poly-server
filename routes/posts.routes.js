@@ -87,6 +87,12 @@ router.put("/post-update/:postId", isAuthenticated, async (req, res, next) => {
         errorMessage: "This user does not have permition to perform this task",
       });
     } else {
+      if (!content) {
+        return res
+          .status(400)
+          .json({ errorMessage: "Please provide the post content" });
+      }
+
       updatedPost = await Post.findByIdAndUpdate(
         postId,
         { content },
