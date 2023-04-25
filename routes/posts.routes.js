@@ -78,7 +78,7 @@ router.put("/post-update/:postId", isAuthenticated, async (req, res, next) => {
   try {
     const { postId } = req.params;
     const currentUser = req.payload._id;
-    const { content } = req.body;
+    const { content, imageUrl } = req.body;
     let updatedPost;
     const thisPost = await Post.findById(postId);
 
@@ -95,7 +95,7 @@ router.put("/post-update/:postId", isAuthenticated, async (req, res, next) => {
 
       updatedPost = await Post.findByIdAndUpdate(
         postId,
-        { content },
+        { content, imageUrl },
         { new: true }
       );
       res.status(200).json(updatedPost);

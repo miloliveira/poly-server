@@ -11,7 +11,7 @@ cloudinary.config({
 const storage = new CloudinaryStorage({
   cloudinary,
   params: {
-    allowed_formats: ["jpg", "img", "jpeg", "gif"],
+    allowed_formats: ["jpg", "img", "jpeg", "gif", "png"],
     folder: "appcrud",
   },
 });
