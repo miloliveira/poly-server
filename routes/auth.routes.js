@@ -70,10 +70,10 @@ router.post("/signup", (req, res, next) => {
 
 // POST  /auth/login - Verifies email and password and returns a JWT
 router.post("/login", (req, res, next) => {
-  const { username, email, password } = req.body;
+  const { loginName, password } = req.body;
 
   // Check if email or password are provided as empty string
-  if ((username === "" && email === "") || password === "") {
+  if (loginName === "" || password === "") {
     res
       .status(400)
       .json({ errorMessage: "Provide username or email and password." });
@@ -82,7 +82,7 @@ router.post("/login", (req, res, next) => {
 
   // Check the users collection if a user with the same email exists
   User.findOne({
-    $or: [{ username: username }, { email: email }],
+    $or: [{ username: loginName }, { email: loginName }],
   })
     .then((foundUser) => {
       if (!foundUser) {
