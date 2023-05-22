@@ -12,7 +12,7 @@ const { isAuthenticated } = require("../middleware/jwt.middleware.js");
 const saltRounds = 10;
 
 router.post("/signup", (req, res, next) => {
-  const { username, password, name } = req.body;
+  const { username, password, name, email } = req.body;
 
   if (!username) {
     return res.status(400).json({ errorMessage: "Please provide username" });
@@ -22,14 +22,16 @@ router.post("/signup", (req, res, next) => {
   }
   if (!name) {
     return res.status(400).json({ errorMessage: "Please provide name" });
+  } else if (!email) {
+    return res.status(400).json({ errorMessage: "Please provide email" });
   }
 
   // This regular expression check that the email is of a valid format
-  /* const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
   if (!emailRegex.test(email)) {
-    res.status(400).json({ message: "Provide a valid email address." });
+    res.status(400).json({ errorMessage: "Provide a valid email address." });
     return;
-  } */
+  }
 
   const passwordRegex = /(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}/;
   if (!passwordRegex.test(password)) {
@@ -40,24 +42,25 @@ router.post("/signup", (req, res, next) => {
     return;
   }
 
-  User.findOne({ username })
+  User.findOne({
+    $or: [{ username: username }, { email: email }],
+  })
     .then((foundUser) => {
       if (foundUser) {
         res.status(400).json({ errorMessage: "User already exists." });
         return;
       }
-
       const salt = bcrypt.genSaltSync(saltRounds);
       const hashedPassword = bcrypt.hashSync(password, salt);
-      return User.create({ username, password: hashedPassword, name });
+      return User.create({ username, password: hashedPassword, name, email });
     })
     .then((createdUser) => {
       // Deconstruct the newly created user object to omit the password
       // We should never expose passwords publicly
-      const { username, name, _id } = createdUser;
+      const { username, name, _id, email } = createdUser;
 
       // Create a new object that doesn't expose the password
-      const user = { username, name, _id };
+      const user = { username, email, name, _id };
 
       // Send a json response containing the user object
       res.status(201).json({ user: user });
