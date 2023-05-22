@@ -70,16 +70,20 @@ router.post("/signup", (req, res, next) => {
 
 // POST  /auth/login - Verifies email and password and returns a JWT
 router.post("/login", (req, res, next) => {
-  const { username, password } = req.body;
+  const { username, email, password } = req.body;
 
   // Check if email or password are provided as empty string
-  if (username === "" || password === "") {
-    res.status(400).json({ errorMessage: "Provide username and password." });
+  if ((username === "" && email === "") || password === "") {
+    res
+      .status(400)
+      .json({ errorMessage: "Provide username or email and password." });
     return;
   }
 
   // Check the users collection if a user with the same email exists
-  User.findOne({ username })
+  User.findOne({
+    $or: [{ username: username }, { email: email }],
+  })
     .then((foundUser) => {
       if (!foundUser) {
         // If the user is not found, send an error response
@@ -92,10 +96,10 @@ router.post("/login", (req, res, next) => {
 
       if (passwordCorrect) {
         // Deconstruct the user object to omit the password
-        const { _id, username, name } = foundUser;
+        const { _id, username, name, email } = foundUser;
 
         // Create an object that will be set as the token payload
-        const payload = { _id, username, name };
+        const payload = { _id, username, email, name };
 
         // Create a JSON Web Token and sign it
         const authToken = jwt.sign(payload, process.env.TOKEN_SECRET, {
