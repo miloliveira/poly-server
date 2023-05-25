@@ -1,5 +1,8 @@
 const express = require("express");
 const router = express.Router();
+const bcrypt = require("bcrypt");
+const saltRounds = 10;
+const jwt = require("jsonwebtoken");
 const User = require("../models/User.model");
 const Post = require("../models/Post.model");
 const Comment = require("../models/Comment.model");
@@ -115,8 +118,16 @@ router.put("/profile-edit/:userId", isAuthenticated, async (req, res, next) => {
   try {
     const { userId } = req.params;
     const currentUser = req.payload._id;
-    const { username, name, imageUrl, education, occupation, location, about } =
-      await req.body;
+    const {
+      username,
+      name,
+      password,
+      imageUrl,
+      education,
+      occupation,
+      location,
+      about,
+    } = await req.body;
 
     if (currentUser != userId) {
       return await res.status(401).json({
@@ -132,10 +143,38 @@ router.put("/profile-edit/:userId", isAuthenticated, async (req, res, next) => {
           });
         }
       });
-
+    }
+    if (!password) {
       const updatedUser = await User.findByIdAndUpdate(
         userId,
         { username, name, imageUrl, education, occupation, location, about },
+        { new: true }
+      );
+      res.json(updatedUser);
+    } else {
+      const passwordRegex = /(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}/;
+      if (!passwordRegex.test(password)) {
+        res.status(400).json({
+          errorMessage:
+            "Password must have at least 6 characters and contain at least one number, one lowercase and one uppercase letter.",
+        });
+        return;
+      }
+      const salt = bcrypt.genSaltSync(saltRounds);
+      const hashedPassword = bcrypt.hashSync(password, salt);
+
+      const updatedUser = await User.findByIdAndUpdate(
+        userId,
+        {
+          username,
+          name,
+          password: hashedPassword,
+          imageUrl,
+          education,
+          occupation,
+          location,
+          about,
+        },
         { new: true }
       );
 
