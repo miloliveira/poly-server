@@ -118,16 +118,8 @@ router.put("/profile-edit/:userId", isAuthenticated, async (req, res, next) => {
   try {
     const { userId } = req.params;
     const currentUser = req.payload._id;
-    const {
-      username,
-      name,
-      password,
-      imageUrl,
-      education,
-      occupation,
-      location,
-      about,
-    } = await req.body;
+    const { username, name, imageUrl, education, occupation, location, about } =
+      await req.body;
 
     if (currentUser != userId) {
       return await res.status(401).json({
@@ -144,44 +136,16 @@ router.put("/profile-edit/:userId", isAuthenticated, async (req, res, next) => {
         }
       });
     }
-    if (!password) {
-      const updatedUser = await User.findByIdAndUpdate(
-        userId,
-        { username, name, imageUrl, education, occupation, location, about },
-        { new: true }
-      );
-      res.json(updatedUser);
-    } else {
-      const passwordRegex = /(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}/;
-      if (!passwordRegex.test(password)) {
-        res.status(400).json({
-          errorMessage:
-            "Password must have at least 6 characters and contain at least one number, one lowercase and one uppercase letter.",
-        });
-        return;
-      }
-      const salt = bcrypt.genSaltSync(saltRounds);
-      const hashedPassword = bcrypt.hashSync(password, salt);
 
-      const updatedUser = await User.findByIdAndUpdate(
-        userId,
-        {
-          username,
-          name,
-          password: hashedPassword,
-          imageUrl,
-          education,
-          occupation,
-          location,
-          about,
-        },
-        { new: true }
-      );
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      { username, name, imageUrl, education, occupation, location, about },
+      { new: true }
+    );
 
-      await res.status(200).json(updatedUser);
-    }
+    res.status(200).json(updatedUser);
   } catch (error) {
-    await res.status(400).json(error);
+    res.status(400).json(error);
   }
 });
 
