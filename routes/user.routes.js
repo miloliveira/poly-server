@@ -229,21 +229,26 @@ router.delete(
 router.get("/in/:userId/postActivity", async (req, res, next) => {
   try {
     const { userId } = req.params;
-    const userActivityPosts = await Post.find({ user: userId });
-    //console.log(userActivityPosts);
-    await res.status(200).json(userActivityPosts);
+    const userPostsActivity = await Post.find({ user: userId });
+    //console.log(userPostsActivity);
+    await res.status(200).json(userPostsActivity);
+  } catch (error) {
+    res.status(400).json(error);
+  }
+});
+
+router.get("/in/:userId/likesActivity", async (req, res, next) => {
+  try {
+    const { userId } = req.params;
+    const userLikesActivity = await Post.find({ likes: userId });
+    //console.log(userLikesActivity);
+    await res.status(200).json(userLikesActivity);
   } catch (error) {
     res.status(400).json(error);
   }
 });
 
 /* router.get(
-  "/in/:userId/likesActivity",
-  isAuthenticated,
-  async (req, res, next) => {}
-);
-
-router.get(
   "/in/:userId/commentsActivity",
   isAuthenticated,
   async (req, res, next) => {}
