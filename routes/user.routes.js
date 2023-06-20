@@ -229,11 +229,14 @@ router.delete(
 router.get("/in/:userId/postActivity", async (req, res, next) => {
   try {
     const { userId } = req.params;
-    const userPostsActivity = await Post.find({ user: userId });
+    const userPostsActivity = await Post.find({ user: userId })
+      .populate("user")
+      .populate({ path: "comments", populate: { path: "user" } });
     //console.log(userPostsActivity);
     await res.status(200).json(userPostsActivity);
   } catch (error) {
     res.status(400).json(error);
+    console.log(error);
   }
 });
 
