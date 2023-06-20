@@ -226,4 +226,27 @@ router.delete(
   }
 );
 
+router.get("/in/:userId/postActivity", async (req, res, next) => {
+  try {
+    const { userId } = req.params;
+    const userActivityPosts = await Post.find({ user: userId });
+    //console.log(userActivityPosts);
+    await res.status(200).json(userActivityPosts);
+  } catch (error) {
+    res.status(400).json(error);
+  }
+});
+
+/* router.get(
+  "/in/:userId/likesActivity",
+  isAuthenticated,
+  async (req, res, next) => {}
+);
+
+router.get(
+  "/in/:userId/commentsActivity",
+  isAuthenticated,
+  async (req, res, next) => {}
+); */
+
 module.exports = router;
