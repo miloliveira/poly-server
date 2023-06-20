@@ -237,21 +237,26 @@ router.get("/in/:userId/postActivity", async (req, res, next) => {
   }
 });
 
-router.get("/in/:userId/likesActivity", async (req, res, next) => {
+router.get("/in/:userId/likeActivity", async (req, res, next) => {
   try {
     const { userId } = req.params;
-    const userLikesActivity = await Post.find({ likes: userId });
-    //console.log(userLikesActivity);
-    await res.status(200).json(userLikesActivity);
+    const userLikeActivity = await Post.find({ likes: userId });
+    //console.log(userLikeActivity);
+    await res.status(200).json(userLikeActivity);
   } catch (error) {
     res.status(400).json(error);
   }
 });
 
-/* router.get(
-  "/in/:userId/commentsActivity",
-  isAuthenticated,
-  async (req, res, next) => {}
-); */
+router.get("/in/:userId/commentActivity", async (req, res, next) => {
+  try {
+    const { userId } = req.params;
+    const userCommentActivity = await Comment.find({ user: userId });
+    //console.log(userCommentActivity)
+    await res.status(200).json(userCommentActivity);
+  } catch (error) {
+    res.status(400).json(error);
+  }
+});
 
 module.exports = router;
