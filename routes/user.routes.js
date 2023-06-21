@@ -256,9 +256,24 @@ router.get("/in/:userId/likeActivity", async (req, res, next) => {
 router.get("/in/:userId/commentActivity", async (req, res, next) => {
   try {
     const { userId } = req.params;
-    const userCommentActivity = await Comment.find({ user: userId });
-    //console.log(userCommentActivity)
-    await res.status(200).json(userCommentActivity);
+    const allComments = await Comment.find({ user: userId });
+
+    let commentsArray = [];
+
+    for (let i = 0; i < allComments.length; i++) {
+      let response = await Post.findById(allComments[i].post)
+        .populate("user")
+        .populate({ path: "comments", populate: { path: "user" } });
+
+      if (!commentsArray.includes(response)) {
+        commentsArray.push(response);
+      }
+    }
+    let newArr = await commentsArray.map(JSON.stringify);
+    let uniqueArr = new Set(newArr);
+    let resArr = Array.from(uniqueArr, JSON.parse);
+
+    res.status(200).json(resArr);
   } catch (error) {
     res.status(400).json(error);
   }
