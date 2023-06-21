@@ -243,7 +243,9 @@ router.get("/in/:userId/postActivity", async (req, res, next) => {
 router.get("/in/:userId/likeActivity", async (req, res, next) => {
   try {
     const { userId } = req.params;
-    const userLikeActivity = await Post.find({ likes: userId });
+    const userLikeActivity = await Post.find({ likes: userId })
+      .populate("user")
+      .populate({ path: "comments", populate: { path: "user" } });
     //console.log(userLikeActivity);
     await res.status(200).json(userLikeActivity);
   } catch (error) {
