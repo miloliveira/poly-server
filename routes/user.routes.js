@@ -159,18 +159,17 @@ router.put(
       const { newPassword } = await req.body;
 
       if (currentUser != userId) {
-        return await res.status(401).json({
+        return res.status(401).json({
           errorMessage:
             "This user does not have permition to edit this profile",
         });
       } else {
         const passwordRegex = /(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}/;
         if (!passwordRegex.test(newPassword)) {
-          res.status(400).json({
+          return res.status(400).json({
             errorMessage:
               "Password must have at least 6 characters and contain at least one number, one lowercase and one uppercase letter.",
           });
-          return;
         }
         const salt = bcrypt.genSaltSync(saltRounds);
         const hashedPassword = bcrypt.hashSync(newPassword, salt);
