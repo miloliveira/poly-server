@@ -120,30 +120,25 @@ router.put("/profile-edit/:userId", isAuthenticated, async (req, res, next) => {
     const currentUser = req.payload._id;
     const { username, name, imageUrl, education, occupation, location, about } =
       await req.body;
+    const thisUsernameExists = await User.findOne({ username: username });
 
     if (currentUser != userId) {
-      return await res.status(401).json({
+      return res.status(401).json({
         errorMessage: "This user does not have permition to edit this profile",
       });
-    } else {
-      const allUsers = await User.find({});
-
-      allUsers.forEach((el) => {
-        if (el.username == username && el._id != userId) {
-          return res.status(400).json({
-            errorMessage: "This username is already taken",
-          });
-        }
+    } else if (thisUsernameExists && thisUsernameExists._id != userId) {
+      res.status(400).json({
+        errorMessage: "This username is already taken",
       });
+    } else {
+      const updatedUser = await User.findByIdAndUpdate(
+        userId,
+        { username, name, imageUrl, education, occupation, location, about },
+        { new: true }
+      );
+
+      res.status(200).json(updatedUser);
     }
-
-    const updatedUser = await User.findByIdAndUpdate(
-      userId,
-      { username, name, imageUrl, education, occupation, location, about },
-      { new: true }
-    );
-
-    res.status(200).json(updatedUser);
   } catch (error) {
     res.status(400).json(error);
   }
