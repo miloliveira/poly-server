@@ -1,8 +1,8 @@
-## "Soon to be named" App
+## App Chatly
 
 
-A clone of a social network application, where you can create, read, update and delete your content, and check and interact with other people's too. 
-
+A social network application, where you can create, read, update and delete your content, and check and interact with other people's too. 
+Check the deployed version [here](https://appchatly.netlify.app/) 🚀
 
 ## Project Status :writing_hand:
 
