@@ -16,16 +16,26 @@ router.get("/in/:userId", async (req, res, next) => {
 
     await user.populate({
       path: "posts",
-      populate: ["user", { path: "comments", populate: "user" }],
+      populate: [
+        { path: "user", select: "name imageUrl" },
+        {
+          path: "comments",
+          populate: { path: "user", select: "name imageUrl" },
+        },
+      ],
     });
     await user.populate({
       path: "likedPosts",
-      populate: ["user", { path: "comments", populate: "user" }],
+      populate: [
+        { path: "user", select: "name imageUrl" },
+        {
+          path: "comments",
+          populate: { path: "user", select: "name imageUrl" },
+        },
+      ],
     });
     await user.populate("followers");
-    /* await user.populate("following");
-    await user.populate("likedPosts");
-   */
+
     const objectUser = await {
       id: userId,
       username: user.username,
@@ -40,7 +50,7 @@ router.get("/in/:userId", async (req, res, next) => {
       followers: user.followers,
       following: user.following,
     };
-    await res.status(200).json(objectUser);
+    res.status(200).json(objectUser);
   } catch (error) {
     await res.status(400).json(error);
   }
