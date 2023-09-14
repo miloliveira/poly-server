@@ -6,14 +6,16 @@ const Comment = require("../models/Comment.model");
 const { isAuthenticated } = require("../middleware/jwt.middleware");
 const fileUploader = require("../config/cloudinary");
 
-router.get("/posts", (req, res, next) => {
+router.get("/posts", async (req, res, next) => {
   try {
-    Post.find({})
-      .populate("user")
-      .populate({ path: "comments", populate: { path: "user" } })
-      .then((allPosts) => {
-        res.status(200).json(allPosts);
+    const allPosts = await Post.find({})
+      .populate({ path: "user", select: "name imageUrl" })
+      .populate({
+        path: "comments",
+        populate: { path: "user", select: "name imageUrl" },
       });
+
+    res.status(200).json(allPosts);
   } catch (error) {
     res.status(400).json(error);
   }
