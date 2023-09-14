@@ -10,7 +10,10 @@ router.get("/comments/:postId", async (req, res, next) => {
   try {
     const { postId } = req.params;
 
-    const commentsList = await Comment.find({ post: postId }).populate("user");
+    const commentsList = await Comment.find({ post: postId }).populate({
+      path: "user",
+      select: "name imageUrl",
+    });
     res.status(200).json(commentsList);
   } catch (error) {
     res.status(400).json(error);
