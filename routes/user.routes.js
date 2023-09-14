@@ -34,9 +34,10 @@ router.get("/in/:userId", async (req, res, next) => {
         },
       ],
     });
-    await user.populate("followers");
+    await user.populate({ path: "followers", select: "name imageUrl" });
+    await user.populate({ path: "following", select: "name imageUrl" });
 
-    const objectUser = await {
+    const objectUser = {
       id: userId,
       username: user.username,
       name: user.name,
@@ -52,7 +53,7 @@ router.get("/in/:userId", async (req, res, next) => {
     };
     res.status(200).json(objectUser);
   } catch (error) {
-    await res.status(400).json(error);
+    res.status(400).json(error);
   }
 });
 
