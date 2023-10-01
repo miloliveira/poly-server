@@ -253,7 +253,10 @@ router.get("/in/:userId/likeActivity", async (req, res, next) => {
     const { userId } = req.params;
     const userLikeActivity = await Post.find({ likes: userId })
       .populate({ path: "user", select: "name imageUrl" })
-      .populate({ path: "comments", populate: { path: "user", select: "name imageUrl" } });
+      .populate({
+        path: "comments",
+        populate: { path: "user", select: "name imageUrl" },
+      });
     //console.log(userLikeActivity);
     await res.status(200).json(userLikeActivity);
   } catch (error) {
@@ -270,8 +273,11 @@ router.get("/in/:userId/commentActivity", async (req, res, next) => {
 
     for (let i = 0; i < allComments.length; i++) {
       let response = await Post.findById(allComments[i].post)
-        .populate("user")
-        .populate({ path: "comments", populate: { path: "user" } });
+        .populate({ path: "user", select: "name imageUrl" })
+        .populate({
+          path: "comments",
+          populate: { path: "user", select: "name imageUrl" },
+        });
 
       if (!commentsArray.includes(response)) {
         commentsArray.push(response);
