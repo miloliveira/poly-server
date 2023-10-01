@@ -235,8 +235,11 @@ router.get("/in/:userId/postActivity", async (req, res, next) => {
   try {
     const { userId } = req.params;
     const userPostsActivity = await Post.find({ user: userId })
-      .populate("user")
-      .populate({ path: "comments", populate: { path: "user" } });
+      .populate({ path: "user", select: "name imageUrl" })
+      .populate({
+        path: "comments",
+        populate: { path: "user", select: "name imageUrl" },
+      });
     //console.log(userPostsActivity);
     await res.status(200).json(userPostsActivity);
   } catch (error) {
