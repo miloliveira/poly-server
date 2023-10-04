@@ -308,7 +308,9 @@ router.get("/in/:userId/likeActivity/:qty", async (req, res, next) => {
 router.get("/in/:userId/commentActivity", async (req, res, next) => {
   try {
     const { userId } = req.params;
-    const allComments = await Comment.find({ user: userId });
+    const allComments = await Comment.find({ user: userId }).sort({
+      updatedAt: -1,
+    });
 
     let commentsArray = [];
 
@@ -337,8 +339,10 @@ router.get("/in/:userId/commentActivity", async (req, res, next) => {
 router.get("/in/:userId/commentActivity/:qty", async (req, res, next) => {
   try {
     const { userId } = req.params;
-    const {qty} = req.params;
-    const allComments = await Comment.find({ user: userId }).limit(qty).sort({ updatedAt: -1 })
+    const { qty } = req.params;
+    const allComments = await Comment.find({ user: userId })
+      .limit(qty)
+      .sort({ updatedAt: -1 });
 
     let commentsArray = [];
 
