@@ -296,7 +296,7 @@ router.get("/in/:userId/likeActivity/:qty", async (req, res, next) => {
         path: "comments",
         populate: { path: "user", select: "name imageUrl" },
       })
-      .sort({ createdAt: -1 })
+      .sort({ updatedAt: -1 })
       .limit(qty);
 
     res.status(200).json(userLikeActivity);
