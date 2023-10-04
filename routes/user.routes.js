@@ -334,4 +334,34 @@ router.get("/in/:userId/commentActivity", async (req, res, next) => {
   }
 });
 
+router.get("/in/:userId/commentActivity/:qty", async (req, res, next) => {
+  try {
+    const { userId } = req.params;
+    const {qty} = req.params;
+    const allComments = await Comment.find({ user: userId }).limit(qty).sort({ updatedAt: -1 })
+
+    let commentsArray = [];
+
+    for (let i = 0; i < allComments.length; i++) {
+      let response = await Post.findById(allComments[i].post)
+        .populate({ path: "user", select: "name imageUrl" })
+        .populate({
+          path: "comments",
+          populate: { path: "user", select: "name imageUrl" },
+        });
+
+      if (!commentsArray.includes(response)) {
+        commentsArray.push(response);
+      }
+    }
+    let newArr = await commentsArray.map(JSON.stringify);
+    let uniqueArr = new Set(newArr);
+    let resArr = Array.from(uniqueArr, JSON.parse);
+
+    res.status(200).json(resArr);
+  } catch (error) {
+    res.status(400).json(error);
+  }
+});
+
 module.exports = router;
