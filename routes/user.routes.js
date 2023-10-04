@@ -278,6 +278,9 @@ router.get("/in/:userId/likeActivity", async (req, res, next) => {
       .populate({
         path: "comments",
         populate: { path: "user", select: "name imageUrl" },
+      })
+      .sort({
+        updatedAt: -1,
       });
     //console.log(userLikeActivity);
     await res.status(200).json(userLikeActivity);
