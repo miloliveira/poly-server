@@ -240,6 +240,8 @@ router.get("/in/:userId/postActivity", async (req, res, next) => {
       .populate({
         path: "comments",
         populate: { path: "user", select: "name imageUrl" },
+      }).sort({
+        updatedAt: -1,
       });
 
     res.status(200).json(userPostsActivity);
