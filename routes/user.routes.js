@@ -285,6 +285,25 @@ router.get("/in/:userId/likeActivity", async (req, res, next) => {
   }
 });
 
+router.get("/in/:userId/likeActivity/:qty", async (req, res, next) => {
+  try {
+    const { userId } = req.params;
+    const { qty } = req.params;
+    const userLikeActivity = await Post.find({ likes: userId })
+      .populate({ path: "user", select: "name imageUrl" })
+      .populate({
+        path: "comments",
+        populate: { path: "user", select: "name imageUrl" },
+      })
+      .sort({ createdAt: -1 })
+      .limit(qty);
+
+    res.status(200).json(userLikeActivity);
+  } catch (error) {
+    res.status(400).json(error);
+  }
+});
+
 router.get("/in/:userId/commentActivity", async (req, res, next) => {
   try {
     const { userId } = req.params;
