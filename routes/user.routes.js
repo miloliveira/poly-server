@@ -234,14 +234,35 @@ router.delete(
 router.get("/in/:userId/postActivity", async (req, res, next) => {
   try {
     const { userId } = req.params;
+
     const userPostsActivity = await Post.find({ user: userId })
       .populate({ path: "user", select: "name imageUrl" })
       .populate({
         path: "comments",
         populate: { path: "user", select: "name imageUrl" },
       });
-    //console.log(userPostsActivity);
-    await res.status(200).json(userPostsActivity);
+
+    res.status(200).json(userPostsActivity);
+  } catch (error) {
+    res.status(400).json(error);
+    console.log(error);
+  }
+});
+
+router.get("/in/:userId/postActivity/:qty", async (req, res, next) => {
+  try {
+    const { userId } = req.params;
+    const { qty } = req.params;
+
+    const userPostsActivity = await Post.find({ user: userId })
+      .populate({ path: "user", select: "name imageUrl" })
+      .populate({
+        path: "comments",
+        populate: { path: "user", select: "name imageUrl" },
+      })
+      .limit(qty);
+
+    res.status(200).json(userPostsActivity);
   } catch (error) {
     res.status(400).json(error);
     console.log(error);
