@@ -240,8 +240,9 @@ router.get("/in/:userId/postActivity", async (req, res, next) => {
       .populate({
         path: "comments",
         populate: { path: "user", select: "name imageUrl" },
-      }).sort({
-        updatedAt: -1,
+      })
+      .sort({
+        createdAt: -1,
       });
 
     res.status(200).json(userPostsActivity);
@@ -262,7 +263,7 @@ router.get("/in/:userId/postActivity/:qty", async (req, res, next) => {
         path: "comments",
         populate: { path: "user", select: "name imageUrl" },
       })
-      .sort({ updatedAt: -1 })
+      .sort({ createdAt: -1 })
       .limit(qty);
 
     res.status(200).json(userPostsActivity);
