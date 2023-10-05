@@ -283,7 +283,7 @@ router.get("/in/:userId/likeActivity", async (req, res, next) => {
         populate: { path: "user", select: "name imageUrl" },
       })
       .sort({
-        updatedAt: -1,
+        createdAt: -1,
       });
     //console.log(userLikeActivity);
     await res.status(200).json(userLikeActivity);
@@ -302,7 +302,7 @@ router.get("/in/:userId/likeActivity/:qty", async (req, res, next) => {
         path: "comments",
         populate: { path: "user", select: "name imageUrl" },
       })
-      .sort({ updatedAt: -1 })
+      .sort({ createdAt: -1 })
       .limit(qty);
 
     res.status(200).json(userLikeActivity);
