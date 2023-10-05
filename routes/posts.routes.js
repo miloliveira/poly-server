@@ -13,6 +13,9 @@ router.get("/posts", async (req, res, next) => {
       .populate({
         path: "comments",
         populate: { path: "user", select: "name imageUrl" },
+      })
+      .sort({
+        createdAt: -1,
       });
 
     res.status(200).json(allPosts);
