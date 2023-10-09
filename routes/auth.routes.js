@@ -135,4 +135,37 @@ router.get("/verify", isAuthenticated, (req, res, next) => {
   res.status(200).json(req.payload);
 });
 
+router.post("/google-auth", (req, res, next) => {
+  const { email, username, name, password } = req.body;
+
+  // Check the users collection if a user with the same email exists
+  User.findOne({ email: email })
+    .then((foundUser) => {
+      if (!foundUser) {
+        User.create({ email, username, name, password })
+          .then((createdUser) => {
+            const { _id, username, email, name } = createdUser;
+            const payload = { _id, username, email, name };
+            const authToken = jwt.sign(payload, process.env.TOKEN_SECRET, {
+              algorithm: "HS256",
+              expiresIn: "6h",
+            });
+
+            res.status(200).json({ authToken: authToken });
+          })
+          .catch((error) => console.log(error));
+      } else {
+        const { _id, username, email, name } = foundUser;
+        const payload = { _id, username, email, name };
+        const authToken = jwt.sign(payload, process.env.TOKEN_SECRET, {
+          algorithm: "HS256",
+          expiresIn: "6h",
+        });
+
+        res.status(200).json({ authToken: authToken });
+      }
+    })
+    .catch((err) => console.log(err));
+});
+
 module.exports = router;
