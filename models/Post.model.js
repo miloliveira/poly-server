@@ -8,6 +8,7 @@ const postSchema = new Schema(
     },
     user: { type: Schema.Types.ObjectId, ref: "users" },
     likes: [{ type: Schema.Types.ObjectId, ref: "users" }],
+    shares: [{ type: Schema.Types.ObjectId, ref: "share" }],
     comments: [{ type: Schema.Types.ObjectId, ref: "comments" }],
     imageUrl: { type: String },
   },
