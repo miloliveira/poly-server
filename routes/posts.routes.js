@@ -245,4 +245,40 @@ router.post("/share-post/:postId", isAuthenticated, async (req, res, next) => {
   console.log(error);
 });
 
+router.delete(
+  "/delete-share/:shareId",
+  isAuthenticated,
+  async (req, res, next) => {
+    try {
+      const { shareId } = req.params;
+      const currentUser = req.payload._id;
+      const { userId, postId } = req.body;
+
+      if (currentUser !== userId) {
+        return res.status(400).json({
+          errorMessage:
+            "This user does not have permition to perform this task.",
+        });
+      }
+
+      const user = await User.findById(userId);
+      const post = await Post.findById(postId);
+
+      if (user.sharedPosts.includes(shareId) && post.shares.includes(shareId)) {
+        await user.sharedPosts.pull(shareId);
+        const updatedUser = await user.save();
+        await post.shares.pull(shareId);
+        const updatedPost = await post.save();
+
+        const shareToDelete = await Share.findByIdAndDelete(shareId);
+        return res.status(200).json(shareToDelete);
+      } else {
+        return res
+          .status(400)
+          .json({ errorMessage: "This action cannot be completed" });
+      }
+    } catch (error) {}
+    console.log(error);
+  }
+);
 module.exports = router;
