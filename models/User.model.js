@@ -51,6 +51,12 @@ const userSchema = new Schema(
         ref: "posts",
       },
     ],
+    sharedPosts: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "share",
+      },
+    ],
     following: [
       {
         type: Schema.Types.ObjectId,
