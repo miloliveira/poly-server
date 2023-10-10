@@ -3,6 +3,7 @@ const router = express.Router();
 const Post = require("../models/Post.model");
 const User = require("../models/User.model");
 const Comment = require("../models/Comment.model");
+const Share = require("../models/Share.model");
 const { isAuthenticated } = require("../middleware/jwt.middleware");
 const fileUploader = require("../config/cloudinary");
 
@@ -205,5 +206,43 @@ router.delete(
     }
   }
 );
+
+router.post("/share-post/:postId", isAuthenticated, async (req, res, next) => {
+  try {
+    const { postId } = req.params;
+    const currentUser = req.payload._id;
+    const { userId, content } = req.body;
+
+    const allShares = await Share.find({});
+
+    if (currentUser !== userId) {
+      return res.status(400).json({
+        errorMessage: "This user does not have permition to perform this task.",
+      });
+    }
+
+    for (let i = 0; i < allShares.length; i++) {
+      if (allShares[i].postId == postId && allShares[i].userId == userId) {
+        return res
+          .status(400)
+          .json({ errorMessage: "This post has already been shared." });
+      }
+    }
+
+    const newShare = await Share.create({ postId, userId, content });
+    const updatedPost = await Post.findByIdAndUpdate(
+      postId,
+      { $push: { shares: newShare._id } },
+      { new: true }
+    );
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      { $push: { sharedPosts: newShare._id } },
+      { new: true }
+    );
+    res.status(200).json(newShare);
+  } catch (error) {}
+  console.log(error);
+});
 
 module.exports = router;
