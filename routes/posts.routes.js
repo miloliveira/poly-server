@@ -241,8 +241,9 @@ router.post("/share-post/:postId", isAuthenticated, async (req, res, next) => {
       { new: true }
     );
     res.status(200).json(newShare);
-  } catch (error) {}
-  console.log(error);
+  } catch (error) {
+    console.log(error);
+  }
 });
 
 router.delete(
