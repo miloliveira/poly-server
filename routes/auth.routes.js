@@ -136,13 +136,13 @@ router.get("/verify", isAuthenticated, (req, res, next) => {
 });
 
 router.post("/google-auth", (req, res, next) => {
-  const { email, username, name, password } = req.body;
+  const { email, username, name, password, imageUrl } = req.body;
 
   // Check the users collection if a user with the same email exists
   User.findOne({ email: email })
     .then((foundUser) => {
       if (!foundUser) {
-        User.create({ email, username, name, password })
+        User.create({ email, username, name, password, imageUrl })
           .then((createdUser) => {
             const { _id, username, email, name } = createdUser;
             const payload = { _id, username, email, name };
