@@ -278,8 +278,9 @@ router.delete(
           .status(400)
           .json({ errorMessage: "This action cannot be completed" });
       }
-    } catch (error) {}
-    console.log(error);
+    } catch (error) {
+      console.log(error);
+    }
   }
 );
 module.exports = router;
