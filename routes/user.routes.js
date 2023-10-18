@@ -57,6 +57,22 @@ router.get("/in/:userId", async (req, res, next) => {
   }
 });
 
+router.get("/check-follow/:userId", async (req, res, next) => {
+  try {
+    const { userId } = req.params;
+
+    const user = await User.findById(userId);
+
+    const objectUser = {
+      id: userId,
+      following: user.following,
+    };
+    res.status(200).json(objectUser);
+  } catch (error) {
+    res.status(400).json(error);
+  }
+});
+
 router.get("/in/:userId/follow", isAuthenticated, async (req, res, next) => {
   try {
     const { userId } = req.params;
