@@ -290,8 +290,11 @@ router.get("/in/:userId/shareActivity", async (req, res, next) => {
         userShareActivity.push(response);
       }
     }
+    let newArr = await userShareActivity.map(JSON.stringify);
+    let uniqueArr = new Set(newArr);
+    let resArr = Array.from(uniqueArr, JSON.parse);
 
-    res.status(200).json(userShareActivity);
+    res.status(200).json(resArr);
   } catch (error) {
     res.status(400).json(error);
     console.log(error);
