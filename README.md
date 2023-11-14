@@ -1,14 +1,14 @@
-## App Chatly
+## Poly
 
 
 A social network application, where you can create, read, update and delete your content, and check and interact with other people's too. 
-Check the deployed version [here](https://appchatly.netlify.app/) 🚀
+Check the deployed version [here](https://polyapp.netlify.app/) 🚀
 
 ## Project Status :writing_hand:
 
 This project is currently in development. The goal is to create a social network platform with all the features commonly found on this type of apps.
 
-At this moment, one can join Chatly through Google authentication or the signup/login forms.
+At this moment, one can join Poly through Google authentication or the signup/login forms.
 
 Once logged in, the user is able to create, edit, like and comment the posts. The user can also check his/her profile and edit it, and check other user's profile and full activity history. 
 
@@ -16,7 +16,7 @@ If not logged in, the user is able to check the existing content, but cannot int
 
 
 ## Next to come :hourglass:
-chat; sharing content;
+sharing content;
 
 
 ## Reflection :bulb:
