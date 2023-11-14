@@ -15,6 +15,7 @@ router.get("/posts", async (req, res, next) => {
         path: "comments",
         populate: { path: "user", select: "name imageUrl" },
       })
+      .populate("shares")
       .sort({
         createdAt: -1,
       });
