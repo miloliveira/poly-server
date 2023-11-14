@@ -57,6 +57,28 @@ router.get("/in/:userId", async (req, res, next) => {
   }
 });
 
+router.get("/check-share/:userId", async (req, res, next) => {
+  try {
+    const { userId } = req.params;
+
+    const user = await User.findById(userId);
+
+    await user.populate("sharedPosts");
+
+    const sharedPostIds = user.sharedPosts.map((share) => share.postId);
+
+    const objectUser = {
+      id: userId,
+      shares: user.sharedPosts,
+      sharedPostsIds: sharedPostIds,
+    };
+
+    res.status(200).json(objectUser);
+  } catch (error) {
+    res.status(400).json(error);
+  }
+});
+
 router.get("/check-follow/:userId", async (req, res, next) => {
   try {
     const { userId } = req.params;
