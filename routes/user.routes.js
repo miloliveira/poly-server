@@ -6,6 +6,7 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/User.model");
 const Post = require("../models/Post.model");
 const Comment = require("../models/Comment.model");
+const Share = require("../models/Share.model");
 const { isAuthenticated } = require("../middleware/jwt.middleware");
 
 router.get("/in/:userId", async (req, res, next) => {
@@ -268,6 +269,34 @@ router.delete(
     }
   }
 );
+
+router.get("/in/:userId/shareActivity", async (req, res, next) => {
+  try {
+    const { userId } = req.params;
+
+    const sharesArray = await Share.find({ user: userId });
+
+    let userShareActivity = [];
+
+    for (let i = 0; i < sharesArray.length; i++) {
+      let response = await Post.findById(sharesArray[i].postId)
+        .populate({ path: "user", select: "name imageUrl" })
+        .populate({
+          path: "comments",
+          populate: { path: "user", select: "name imageUrl" },
+        });
+
+      if (!userShareActivity.includes(response)) {
+        userShareActivity.push(response);
+      }
+    }
+
+    res.status(200).json(userShareActivity);
+  } catch (error) {
+    res.status(400).json(error);
+    console.log(error);
+  }
+});
 
 router.get("/in/:userId/postActivity", async (req, res, next) => {
   try {
