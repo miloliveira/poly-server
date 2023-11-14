@@ -301,6 +301,39 @@ router.get("/in/:userId/shareActivity", async (req, res, next) => {
   }
 });
 
+router.get("/in/:userId/shareActivity/:qty", async (req, res, next) => {
+  try {
+    const { userId } = req.params;
+    const { qty } = req.params;
+    const sharesArray = await Share.find({ user: userId })
+      .limit(qty)
+      .sort({ createdAt: -1 });
+
+    let userShareActivity = [];
+
+    for (let i = 0; i < sharesArray.length; i++) {
+      let response = await Post.findById(sharesArray[i].postId)
+        .populate({ path: "user", select: "name imageUrl" })
+        .populate({
+          path: "comments",
+          populate: { path: "user", select: "name imageUrl" },
+        });
+
+      if (!userShareActivity.includes(response)) {
+        userShareActivity.push(response);
+      }
+    }
+    let newArr = await userShareActivity.map(JSON.stringify);
+    let uniqueArr = new Set(newArr);
+    let resArr = Array.from(uniqueArr, JSON.parse);
+
+    res.status(200).json(resArr);
+  } catch (error) {
+    res.status(400).json(error);
+    console.log(error);
+  }
+});
+
 router.get("/in/:userId/postActivity", async (req, res, next) => {
   try {
     const { userId } = req.params;
