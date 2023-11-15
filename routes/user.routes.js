@@ -274,7 +274,7 @@ router.get("/in/:userId/shareActivity", async (req, res, next) => {
   try {
     const { userId } = req.params;
 
-    const sharesArray = await Share.find({ user: userId });
+    const sharesArray = await Share.find({ userId: userId });
 
     let userShareActivity = [];
 
