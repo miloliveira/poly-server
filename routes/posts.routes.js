@@ -154,18 +154,6 @@ router.put("/post-dislike/:postId", isAuthenticated, async (req, res, next) => {
   }
 });
 
-router.get("/testing", isAuthenticated, async (req, res, next) => {
-  try {
-    const currentUser = req.payload;
-    if (currentUser) res.json(currentUser);
-    else {
-      res.json("No current user");
-    }
-  } catch (error) {
-    res.json(error);
-  }
-});
-
 router.delete(
   "/post-delete/:postId",
   isAuthenticated,
