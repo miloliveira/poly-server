@@ -305,7 +305,7 @@ router.get("/in/:userId/shareActivity/:qty", async (req, res, next) => {
   try {
     const { userId } = req.params;
     const { qty } = req.params;
-    const sharesArray = await Share.find({ user: userId })
+    const sharesArray = await Share.find({ userId: userId })
       .limit(qty)
       .sort({ createdAt: -1 });
 
