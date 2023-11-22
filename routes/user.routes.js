@@ -324,8 +324,11 @@ router.get("/in/:userId/shareActivity/:qty", async (req, res, next) => {
           path: "comments",
           populate: { path: "user", select: "name imageUrl" },
         })
-        .populate({ path: "shares", select: "userId" });
-
+        .populate({
+          path: "shares",
+          select: "userId",
+          match: { userId: userId }, // Match the userId in shares
+        });
       if (!userShareActivity.includes(response)) {
         userShareActivity.push(response);
       }
