@@ -284,12 +284,18 @@ router.get("/in/:userId/shareActivity", async (req, res, next) => {
         .populate({
           path: "comments",
           populate: { path: "user", select: "name imageUrl" },
+        })
+        .populate({
+          path: "shares",
+          select: "userId",
+          match: { userId: userId }, // Match the userId in shares
         });
 
       if (!userShareActivity.includes(response)) {
         userShareActivity.push(response);
       }
     }
+
     let newArr = await userShareActivity.map(JSON.stringify);
     let uniqueArr = new Set(newArr);
     let resArr = Array.from(uniqueArr, JSON.parse);
