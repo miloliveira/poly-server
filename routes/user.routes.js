@@ -317,7 +317,8 @@ router.get("/in/:userId/shareActivity/:qty", async (req, res, next) => {
         .populate({
           path: "comments",
           populate: { path: "user", select: "name imageUrl" },
-        });
+        })
+        .populate({ path: "shares", select: "userId" });
 
       if (!userShareActivity.includes(response)) {
         userShareActivity.push(response);
