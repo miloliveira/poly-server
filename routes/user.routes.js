@@ -287,7 +287,7 @@ router.get("/in/:userId/shareActivity", async (req, res, next) => {
         })
         .populate({
           path: "shares",
-          select: "userId",
+          populate: { path: "userId", select: "_id name" },
           match: { userId: userId }, // Match the userId in shares
         });
 
@@ -326,7 +326,8 @@ router.get("/in/:userId/shareActivity/:qty", async (req, res, next) => {
         })
         .populate({
           path: "shares",
-          select: "userId",
+          populate: { path: "userId", select: "_id name" },
+
           match: { userId: userId }, // Match the userId in shares
         });
       if (!userShareActivity.includes(response)) {
