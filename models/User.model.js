@@ -37,7 +37,7 @@ const userSchema = new Schema(
     imageUrl: {
       type: String,
       default:
-        "https://res.cloudinary.com/diytoukff/image/upload/v1669067970/appcrud/profile_tumbnail_wyvxv8.png",
+        "https://res.cloudinary.com/diytoukff/image/upload/v1701795277/go4thbfxtd3fm39yk6vu.png",
     },
     posts: [
       {
