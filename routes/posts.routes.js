@@ -45,12 +45,6 @@ router.post("/create-post/:userId", isAuthenticated, async (req, res, next) => {
     const { content, imageUrl } = req.body;
     const currentUser = req.payload._id;
     let image;
-    /* if (!imageUrl) {
-        image =
-          "https://res.cloudinary.com/diytoukff/image/upload/v1668075402/appcrud/WIN_20220622_10_10_32_Pro_sljpcp.jpg";
-      } else {
-        image = imageUrl;
-      } */
 
     if (currentUser != userId) {
       return res.status(400).json({
