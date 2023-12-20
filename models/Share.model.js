@@ -1,5 +1,7 @@
+// Dependencies
 const { Schema, model } = require("mongoose");
 
+// Define the Share schema
 const shareSchema = new Schema(
   {
     userId: { type: Schema.Types.ObjectId, ref: "users" },
@@ -13,7 +15,8 @@ const shareSchema = new Schema(
     timestamps: true,
   }
 );
-
+// Create a Share model based on the schema
 const Share = model("share", shareSchema);
 
+// Export the Share model
 module.exports = Share;
