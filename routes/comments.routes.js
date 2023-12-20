@@ -16,7 +16,7 @@ router.get("/comments/:postId", async (req, res, next) => {
     });
     res.status(200).json(commentsList);
   } catch (error) {
-    res.status(400).json(error);
+    next(error);
   }
 });
 
