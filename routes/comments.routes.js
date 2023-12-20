@@ -50,7 +50,7 @@ router.post(
       const updatedPost = await post.save();
       res.status(201).json(updatedPost);
     } catch (error) {
-      res.status(400).json(error);
+      next(error);
     }
   }
 );
@@ -86,7 +86,7 @@ router.put(
         res.status(200).json(updatedComment);
       }
     } catch (error) {
-      res.status(400).json(error);
+      next(error);
     }
   }
 );
@@ -118,7 +118,7 @@ router.delete(
 
       res.status(200).json(deletedComment);
     } catch (error) {
-      res.status(400).json(error);
+      next(error);
     }
   }
 );
