@@ -1,19 +1,21 @@
+// Express
 const express = require("express");
 const router = express.Router();
-
+// Authentication
 const bcrypt = require("bcrypt");
-
 const jwt = require("jsonwebtoken");
-
+// Models
 const User = require("../models/User.model");
-
+// Middleware
 const { isAuthenticated } = require("../middleware/jwt.middleware.js");
-
+// Setting the number of salt rounds for bcrypt password hashing
 const saltRounds = 10;
 
+// POST /auth/signup - User registration
 router.post("/signup", (req, res, next) => {
+  // Extract from request body
   const { username, password, name, email } = req.body;
-
+  // Validation checks for required fields
   if (!username) {
     return res.status(400).json({ errorMessage: "Please provide username" });
   }
@@ -26,13 +28,13 @@ router.post("/signup", (req, res, next) => {
     return res.status(400).json({ errorMessage: "Please provide email" });
   }
 
-  // This regular expression check that the email is of a valid format
+  // Regular expression check for a valid email format
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
   if (!emailRegex.test(email)) {
     res.status(400).json({ errorMessage: "Provide a valid email address." });
     return;
   }
-
+  // Regular expression check for a valid password format
   const passwordRegex = /(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}/;
   if (!passwordRegex.test(password)) {
     res.status(400).json({
@@ -41,22 +43,23 @@ router.post("/signup", (req, res, next) => {
     });
     return;
   }
-
+  // Find user by username or email
   User.findOne({
     $or: [{ username: username }, { email: email }],
   })
     .then((foundUser) => {
+      // Send error message if user already exists
       if (foundUser) {
         res.status(400).json({ errorMessage: "User already exists." });
         return;
       }
+      // Hash password and create new user with new hashed password
       const salt = bcrypt.genSaltSync(saltRounds);
       const hashedPassword = bcrypt.hashSync(password, salt);
       return User.create({ username, password: hashedPassword, name, email });
     })
     .then((createdUser) => {
       // Deconstruct the newly created user object to omit the password
-      // We should never expose passwords publicly
       const { username, name, _id, email } = createdUser;
 
       // Create a new object that doesn't expose the password
@@ -72,11 +75,12 @@ router.post("/signup", (req, res, next) => {
       // Send a json response containing the user object
       res.status(200).json({ authToken: authToken });
     })
-    .catch((err) => next(err)); // In this case, we send error handling to the error handling middleware.
+    .catch((err) => next(err)); // Pass the error to the error handling middleware
 });
 
-// POST  /auth/login - Verifies email and password and returns a JWT
+// POST /auth/login - User login
 router.post("/login", (req, res, next) => {
+  // Extract loginName and password from request body
   const { loginName, password } = req.body;
 
   // Check if email or password are provided as empty string
@@ -122,10 +126,10 @@ router.post("/login", (req, res, next) => {
           .json({ errorMessage: "Unable to authenticate the user" });
       }
     })
-    .catch((err) => next(err)); // In this case, we send error handling to the error handling middleware.
+    .catch((err) => next(err)); // Pass the error to the error handling middleware
 });
 
-// GET  /auth/verify  -  Used to verify JWT stored on the client
+// GET /auth/verify - Verify JWT stored on the client
 router.get("/verify", isAuthenticated, (req, res, next) => {
   // If JWT token is valid the payload gets decoded by the
   // isAuthenticated middleware and is made available on `req.payload`
@@ -135,7 +139,9 @@ router.get("/verify", isAuthenticated, (req, res, next) => {
   res.status(200).json(req.payload);
 });
 
+// POST /auth/google-auth - Google authentication
 router.post("/google-auth", (req, res, next) => {
+  // Extract from request body
   const { email, username, name, password, imageUrl } = req.body;
 
   // Check the users collection if a user with the same email exists
@@ -165,7 +171,7 @@ router.post("/google-auth", (req, res, next) => {
         res.status(200).json({ authToken: authToken });
       }
     })
-    .catch((err) => next(err));
+    .catch((err) => next(err)); // Pass the error to the error handling middleware
 });
 
 module.exports = router;
