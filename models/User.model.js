@@ -1,5 +1,7 @@
+// Dependencies
 const { Schema, model } = require("mongoose");
 
+// Define the User schema
 const userSchema = new Schema(
   {
     email: {
@@ -74,7 +76,7 @@ const userSchema = new Schema(
     timestamps: true,
   }
 );
-
+// Create a User model based on the schema
 const User = model("users", userSchema);
-
+// Export the User model
 module.exports = User;
