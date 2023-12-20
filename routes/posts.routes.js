@@ -22,7 +22,7 @@ router.get("/posts", async (req, res, next) => {
 
     res.status(200).json(allPosts);
   } catch (error) {
-    res.status(400).json(error);
+    next(error);
   }
 });
 
@@ -35,7 +35,7 @@ router.get("/post/:postId", (req, res, next) => {
         res.status(200).json(post);
       });
   } catch (error) {
-    res.status(400).json(error);
+    next(error);
   }
 });
 
@@ -71,7 +71,7 @@ router.post("/create-post/:userId", isAuthenticated, async (req, res, next) => {
     await thisUser.save();
     res.status(201).json(savedPost);
   } catch (error) {
-    res.status(400).json(error);
+    next(error);
   }
 });
 
@@ -102,7 +102,7 @@ router.put("/post-update/:postId", isAuthenticated, async (req, res, next) => {
       res.status(200).json(updatedPost);
     }
   } catch (error) {
-    res.json(error);
+    next(error);
   }
 });
 
@@ -123,7 +123,7 @@ router.put("/post-like/:postId", isAuthenticated, async (req, res, next) => {
     await Post.findByIdAndUpdate(postId, { $push: { likes: currentUser } });
     res.status(200).json(thisUser);
   } catch (error) {
-    res.json(error);
+    next(error);
   }
 });
 
@@ -144,7 +144,7 @@ router.put("/post-dislike/:postId", isAuthenticated, async (req, res, next) => {
 
     res.status(200).json(thisUser);
   } catch (error) {
-    res.status(400).json(error);
+    next(error);
   }
 });
 
@@ -185,7 +185,7 @@ router.delete(
       const deletedPost = await Post.findByIdAndDelete(postId);
       res.status(200).json(deletedPost);
     } catch (error) {
-      res.status(400).json(error);
+      next(error);
     }
   }
 );
@@ -225,7 +225,7 @@ router.post("/share-post/:postId", isAuthenticated, async (req, res, next) => {
     );
     res.status(200).json(newShare);
   } catch (error) {
-    console.log(error);
+    next(error);
   }
 });
 
@@ -262,7 +262,7 @@ router.delete(
           .json({ errorMessage: "This action cannot be completed" });
       }
     } catch (error) {
-      console.log(error);
+      next(error);
     }
   }
 );
