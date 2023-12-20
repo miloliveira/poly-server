@@ -1,38 +1,41 @@
-// ℹ️ Gets access to environment variables/settings
-// https://www.npmjs.com/package/dotenv
+// Load environment variables/settings
 require("dotenv").config();
 
-// ℹ️ Connects to the database
+// Connect to the database
 require("./db");
 
-// Handles http requests (express is node js framework)
-// https://www.npmjs.com/package/express
+// Express application setup
 const express = require("express");
-
 const app = express();
 
-// ℹ️ This function is getting exported from the config folder. It runs most pieces of middleware
+// Run middleware setup exported from the config folder
 require("./config")(app);
 
-// 👇 Start handling routes here
+// Routes for the main application
 const indexRoutes = require("./routes/index.routes");
 app.use("/api", indexRoutes);
 
+// Authentication routes
 const authRoutes = require("./routes/auth.routes");
 app.use("/auth", authRoutes);
 
+// Routes for handling posts
 const postRoutes = require("./routes/posts.routes");
 app.use("/", postRoutes);
 
+// Routes for handling comments
 const commentsRoutes = require("./routes/comments.routes");
 app.use("/", commentsRoutes);
 
+// Routes for user-related operations
 const userRoutes = require("./routes/user.routes");
 app.use("/", userRoutes);
 
+// Routes for handling file uploads
 const uploadFileRoutes = require("./routes/uploadFile.routes");
 app.use("/", uploadFileRoutes);
-// ❗ To handle errors. Routes that don't exist or errors that you handle in specific routes
+
+// Include error handling
 require("./error-handling")(app);
 
 module.exports = app;
