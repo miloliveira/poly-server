@@ -165,7 +165,7 @@ router.post("/google-auth", (req, res, next) => {
         res.status(200).json({ authToken: authToken });
       }
     })
-    .catch((err) => console.log(err));
+    .catch((err) => next(err));
 });
 
 module.exports = router;
