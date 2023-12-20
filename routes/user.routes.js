@@ -54,7 +54,7 @@ router.get("/in/:userId", async (req, res, next) => {
     };
     res.status(200).json(objectUser);
   } catch (error) {
-    res.status(400).json(error);
+    next(error);
   }
 });
 
@@ -76,7 +76,7 @@ router.get("/check-share/:userId", async (req, res, next) => {
 
     res.status(200).json(objectUser);
   } catch (error) {
-    res.status(400).json(error);
+    next(error);
   }
 });
 
@@ -92,7 +92,7 @@ router.get("/check-follow/:userId", async (req, res, next) => {
     };
     res.status(200).json(objectUser);
   } catch (error) {
-    res.status(400).json(error);
+    next(error);
   }
 });
 
@@ -114,7 +114,7 @@ router.get("/in/:userId/follow", isAuthenticated, async (req, res, next) => {
       await res.status(200).json(false);
     }
   } catch (error) {
-    await res.status(400).json(error);
+    next(error);
   }
 });
 
@@ -160,7 +160,7 @@ router.put("/in/:userId/follow", isAuthenticated, async (req, res, next) => {
       await res.status(200).json(thisUser);
     }
   } catch (error) {
-    await res.status(400).json(error);
+    next(error);
   }
 });
 
@@ -190,7 +190,7 @@ router.put("/profile-edit/:userId", isAuthenticated, async (req, res, next) => {
       res.status(200).json(updatedUser);
     }
   } catch (error) {
-    res.status(400).json(error);
+    next(error);
   }
 });
 
@@ -227,7 +227,7 @@ router.put(
         await res.status(200).json(updatedUser);
       }
     } catch (error) {
-      await res.status(400).json(error);
+      next(error);
     }
   }
 );
@@ -265,7 +265,7 @@ router.delete(
 
       await res.status(200).json(deletedUser);
     } catch (error) {
-      await res.status(400).json(error);
+      next(error);
     }
   }
 );
@@ -302,8 +302,7 @@ router.get("/in/:userId/shareActivity", async (req, res, next) => {
 
     res.status(200).json(resArr);
   } catch (error) {
-    res.status(400).json(error);
-    console.log(error);
+    next(error);
   }
 });
 
@@ -340,8 +339,7 @@ router.get("/in/:userId/shareActivity/:qty", async (req, res, next) => {
 
     res.status(200).json(resArr);
   } catch (error) {
-    res.status(400).json(error);
-    console.log(error);
+    next(error);
   }
 });
 
@@ -361,8 +359,7 @@ router.get("/in/:userId/postActivity", async (req, res, next) => {
 
     res.status(200).json(userPostsActivity);
   } catch (error) {
-    res.status(400).json(error);
-    console.log(error);
+    next(error);
   }
 });
 
@@ -382,8 +379,7 @@ router.get("/in/:userId/postActivity/:qty", async (req, res, next) => {
 
     res.status(200).json(userPostsActivity);
   } catch (error) {
-    res.status(400).json(error);
-    console.log(error);
+    next(error);
   }
 });
 
@@ -402,7 +398,7 @@ router.get("/in/:userId/likeActivity", async (req, res, next) => {
     //console.log(userLikeActivity);
     await res.status(200).json(userLikeActivity);
   } catch (error) {
-    res.status(400).json(error);
+    next(error);
   }
 });
 
@@ -421,7 +417,7 @@ router.get("/in/:userId/likeActivity/:qty", async (req, res, next) => {
 
     res.status(200).json(userLikeActivity);
   } catch (error) {
-    res.status(400).json(error);
+    next(error);
   }
 });
 
@@ -452,7 +448,7 @@ router.get("/in/:userId/commentActivity", async (req, res, next) => {
 
     res.status(200).json(resArr);
   } catch (error) {
-    res.status(400).json(error);
+    next(error);
   }
 });
 
@@ -484,7 +480,7 @@ router.get("/in/:userId/commentActivity/:qty", async (req, res, next) => {
 
     res.status(200).json(resArr);
   } catch (error) {
-    res.status(400).json(error);
+    next(error);
   }
 });
 
