@@ -1,5 +1,7 @@
+// Dependencies
 const { Schema, model } = require("mongoose");
 
+// Define the Post schema
 const postSchema = new Schema(
   {
     content: {
@@ -16,6 +18,8 @@ const postSchema = new Schema(
     timestamps: true,
   }
 );
+// Create a Post model based on the schema
 const Post = model("posts", postSchema);
 
+// Export the Post model
 module.exports = Post;
