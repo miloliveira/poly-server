@@ -187,6 +187,7 @@ router.delete(
       const currentUser = req.payload._id;
       // Find post by ID
       const thisPost = await Post.findById(postId);
+
       // Check if the current user has permission to delete the post
       if (thisPost.user != currentUser) {
         return res.status(400).json({
@@ -198,8 +199,7 @@ router.delete(
       await User.findByIdAndUpdate(currentUser, {
         $pull: { posts: postId },
       });
-
-      // Remove the post from all users' likedPosts
+      // Remove the post from all user's likedPosts
       const allUsers = await User.find({});
       for (let i = 0; i < allUsers.length; i++) {
         await User.findByIdAndUpdate(allUsers[i], {
@@ -207,15 +207,28 @@ router.delete(
         });
       }
 
+      // Remove the shares from all user's sharedPosts
+      const allSharesRelatedToPost = await Share.find({ postId: postId });
+      for (let i = 0; i < allSharesRelatedToPost.length; i++) {
+        await User.findByIdAndUpdate(allSharesRelatedToPost[i].userId, {
+          $pull: { sharedPosts: allSharesRelatedToPost[i]._id },
+        });
+      }
+      // Delete the shares associated with the post
+      for (let i = 0; i < allSharesRelatedToPost.length; i++) {
+        await Share.findByIdAndDelete(allSharesRelatedToPost[i]._id);
+      }
+
       // Delete the comments associated with the post
-      const commentsToDelete = await thisPost.comments;
+      const commentsToDelete = thisPost.comments;
       for (let i = 0; i < commentsToDelete.length; i++) {
         await Comment.findByIdAndDelete(commentsToDelete[i]);
       }
 
       // Delete the post and respond with deletedPost
-      const deletedPost = await Post.findByIdAndDelete(postId);
-      res.status(200).json(deletedPost);
+      await Post.findByIdAndDelete(postId);
+
+      res.status(200).json();
     } catch (error) {
       next(error); // Pass the error to the error handling middleware
     }
